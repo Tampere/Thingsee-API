@@ -6,36 +6,58 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use Config;
-
 class ThingseeController extends Controller
 {
-    public function getEvents(Request $request, $device)
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-    	$limit = 10;
-    	$start = 0;
-    	$end = "";
-
-    	if($request->has('limit')) $limit = $request->get('limit');
-    	if($request->has('start')) $start = $request->get('start');
-    	if($request->has('end')) $end = "&end=" . $request->get('end');
-
-    	try {
-			$thingsee = new \Thingsee\ThingseeAPI();		
-    	} catch (\GuzzleHttp\Exception\ClientException $e) {
-    		dd($e);
-    	}
-
-		return $thingsee->getEvents($device, "?senses=0x00060100,0x00060200,0x00060400,0x00060300&limit=" . $limit . "&start=" . $start . $end);
+        
     }
 
-    public function getDevices() 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
-    	$devices = Array(
-    		'ThingseeKaupungintalo' => Config::get('thingsee.device1'), 
-    		'ThingseeNasinneula' => Config::get('thingsee.device2')
-    	);
+        // Get the device identifier
+        $deviceauthuuid = $request->header('deviceauthuuid');
 
-    	return $devices;
+        if($request->has('0.senses')) {
+
+            // Get the sensor data
+            $senses = $request->input("0.senses");
+
+            // print_r($request->all());
+
+            // Iterate sensor data and update as neccessary
+            foreach ($senses as $sense) {
+                // $sense['sId']
+                // $sense['val']
+                // $sense['ts'];
+                // 
+                // 1. Tarkistetaan viimeisimmän kyseisen laitteen kyseisen anturin tallennettu arvo
+                // 2. Tallennetaan uusi arvo, jos ts > tallennettu ts
+            }
+        } else {
+            echo "Invalid post";
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
     }
 }

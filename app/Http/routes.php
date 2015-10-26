@@ -16,5 +16,7 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix' => 'v1'], function() {
-	Route::resource('/events', 'ThingseeController');
+	Route::post('/events', 'ThingseeController@postEvents');
+	Route::get('/events', 'ThingseeController@getEvents');
+	Route::get('/devices', 'ThingseeController@getDevices');
 });

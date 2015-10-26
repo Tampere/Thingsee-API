@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -13,9 +14,18 @@ class ThingseeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function getEvents()
     {
-        
+        /**
+         * Check query string parameters for dynamic scope modifications
+         */
+        $arguments = \Input::all();
+        $device = isset($arguments['device']) ? $arguments['device'] : "";
+        $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : "";
+
+        $events = \App\Event::orderBy('updated_at', 'desc')->with('device')->device($device)->sensor($sensor)->get();
+
+        return $events;   
     }
 
     /**
@@ -24,29 +34,32 @@ class ThingseeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function postEvents(Request $request)
     {
         // Get the device identifier
         $deviceauthuuid = $request->header('deviceauthuuid');
+
+        // Find the correct device
+        $device = \App\Device::where('deviceAuthUuid', $deviceauthuuid)->firstOrFail();
 
         if($request->has('0.senses')) {
 
             // Get the sensor data
             $senses = $request->input("0.senses");
 
-            // print_r($request->all());
-
             // Iterate sensor data and update as neccessary
             foreach ($senses as $sense) {
-                // $sense['sId']
-                // $sense['val']
-                // $sense['ts'];
-                // 
-                // 1. Tarkistetaan viimeisimmän kyseisen laitteen kyseisen anturin tallennettu arvo
-                // 2. Tallennetaan uusi arvo, jos ts > tallennettu ts
+                $clauses = ['device_id' => $device->id, 'sid' => $sense['sId']];
+                $currentSense = \App\Event::where($clauses)->orderBy('ts')->first();                
+                if(!$currentSense || $currentSense->ts < $sense['ts']) {
+                    $newSense = \App\Event::create(['sid' => $sense['sId'], 'val' => $sense['val'], 'ts' => $sense['ts'], 'device_id' => $device->id]);
+                    Log::info('Added a new event');
+                } else {
+                    Log::info('No need to update event data');
+                }
             }
         } else {
-            echo "Invalid post";
+            Log::info('Request didn\'t contain event info');
         }
     }
 

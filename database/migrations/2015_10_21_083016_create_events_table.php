@@ -16,7 +16,7 @@ class CreateEventsTable extends Migration
             $table->increments('id');
             $table->char('sid', 10);
             $table->double('val', 15, 8);
-            $table->integer('ts')->unsigned();
+            $table->char('ts', 15); // Why U integer not work
             $table->integer('device_id')->unsigned();
             $table->timestamps();
 

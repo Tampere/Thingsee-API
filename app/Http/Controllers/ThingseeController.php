@@ -20,10 +20,11 @@ class ThingseeController extends Controller
          * Check query string parameters for dynamic scope modifications
          */
         $arguments = \Input::all();
-        $device = isset($arguments['device']) ? $arguments['device'] : "";
-        $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : "";
+        $device = isset($arguments['device']) ? $arguments['device'] : ""; // Multiple devices??
+        $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : ""; // Multiple sensors??
+        $limit = isset($arguments['limit']) ? $arguments['limit'] : "";
 
-        $events = \App\Event::orderBy('updated_at', 'desc')->with('device')->device($device)->sensor($sensor)->get();
+        $events = \App\Event::orderBy('updated_at', 'desc')->with('device')->device($device)->sensor($sensor)->subset($limit)->get();
 
         return $events;   
     }

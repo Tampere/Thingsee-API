@@ -40,4 +40,10 @@ class Event extends Model
         if(strlen($sensor) < 1) return;
         return $query->where('sid', $sensor);
     }
+
+    public function scopeSubset($query, $limit)
+    {
+        if(strlen($limit) < 1) return;
+        return $query->limit($limit);
+    }
 }

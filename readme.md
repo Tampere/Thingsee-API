@@ -12,9 +12,9 @@ The devices push data to our server every 10 minutes via GPRS connection. Curren
 The API responds to HTTP POST at /events. The payload is assumed to be exactly what the ThingSee Cloud pushes.
 
 ###Reading data
-The  API responds to HTTP GET at /events.
+The  API responds to HTTP GET at /events and at /devices.
 
-Without URI parameters, a JSON containing the last 50 events is returned.
+Hitting /events without URI parameters, a JSON containing the last 50 events is returned.
 
 Possible parameters are:
 /events{device?}{sensor?}{limit?}
@@ -24,7 +24,7 @@ Possible parameters are:
 - Limit - How many records to retrieve
 
 ####Sensor mapping
-0x00060100 - Temperature
-0x00060200 - Humidity
-0x00060300 - Pressure
-0x00060400 - Luminance
+- 0x00060100 - Temperature
+- 0x00060200 - Humidity
+- 0x00060300 - Pressure
+- 0x00060400 - Luminance

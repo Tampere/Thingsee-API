@@ -1,6 +1,5 @@
 <?php
 
 return [
-	'email'    => '',
-	'password' => ''
+	'limit' => 50
 ];

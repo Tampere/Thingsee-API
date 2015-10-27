@@ -38,6 +38,14 @@ class Event extends Model
     public function scopeSensor($query, $sensor)
     {
         if(strlen($sensor) < 1) return;
+
+        // Were we looking for a list of sensors
+        if(strpos($sensor, ',') !== false) 
+        {
+            $sensors = explode(',', $sensor);
+            return $query->whereIn('sid', $sensors);
+        }
+
         return $query->where('sid', $sensor);
     }
 

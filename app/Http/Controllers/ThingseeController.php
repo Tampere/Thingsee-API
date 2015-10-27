@@ -20,8 +20,10 @@ class ThingseeController extends Controller
          * Check query string parameters for dynamic scope modifications
          */
         $arguments = \Input::all();
-        $device = isset($arguments['device']) ? $arguments['device'] : ""; // Multiple devices??
-        $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : ""; // Multiple sensors??
+
+        // You can only query one device per request, 'cose multiple devices per request doesn't seem like a useful feature
+        $device = isset($arguments['device']) ? $arguments['device'] : ""; 
+        $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : "";
         $limit = isset($arguments['limit']) ? $arguments['limit'] : 50; // Default limit - move to conf file
 
         /**

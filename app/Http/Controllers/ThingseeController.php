@@ -72,4 +72,13 @@ class ThingseeController extends Controller
             Log::info('Request didn\'t contain event info');
         }
     }
+
+    /**
+     * Get a list of devices
+     * @return JSON Devices
+     */
+    public function getDevices()
+    {
+        return \App\Device::orderBy('updated_at', 'desc')->get(['id', 'name']);
+    }
 }

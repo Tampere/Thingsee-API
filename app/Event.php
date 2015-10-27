@@ -19,13 +19,13 @@ class Event extends Model
     /**
      * Limit query scope to one device
      * @param  Illuminate\Database\Eloquent $query  Query object to modify
-     * @param  string $device DeviceAuthUuid
+     * @param  string $device Device name
      * @return Illuminate\Database\Eloquent         modified query object
      */
     public function scopeDevice($query, $device)
     {
         if(strlen($device) < 1) return;
-        $dev = \App\Device::where('deviceAuthUuid', $device)->firstOrFail();
+        $dev = \App\Device::where('name', $device)->firstOrFail();
         return $query->where('device_id', $dev->id);
     }
 

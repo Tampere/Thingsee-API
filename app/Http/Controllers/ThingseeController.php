@@ -22,9 +22,16 @@ class ThingseeController extends Controller
         $arguments = \Input::all();
         $device = isset($arguments['device']) ? $arguments['device'] : ""; // Multiple devices??
         $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : ""; // Multiple sensors??
-        $limit = isset($arguments['limit']) ? $arguments['limit'] : "";
+        $limit = isset($arguments['limit']) ? $arguments['limit'] : 50; // Default limit - move to conf file
 
-        $events = \App\Event::orderBy('updated_at', 'desc')->with('device')->device($device)->sensor($sensor)->subset($limit)->get();
+        /**
+         * Query for events, eager load device name, add scope modifiers based on uri params
+         * @var Eloquent collection
+         */
+        $events = \App\Event::orderBy('updated_at', 'desc')->with(array('device' => function($query) 
+            {
+                $query->addSelect(array('id', 'name'));
+            }))->device($device)->sensor($sensor)->subset($limit)->get(['sid', 'val', 'ts', 'created_at', 'device_id']);
 
         return $events;   
     }
@@ -62,16 +69,5 @@ class ThingseeController extends Controller
         } else {
             Log::info('Request didn\'t contain event info');
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 }

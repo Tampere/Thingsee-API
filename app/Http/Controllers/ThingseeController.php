@@ -24,7 +24,7 @@ class ThingseeController extends Controller
         // You can only query one device per request, 'cose multiple devices per request doesn't seem like a useful feature
         $device = isset($arguments['device']) ? $arguments['device'] : ""; 
         $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : "";
-        $limit = isset($arguments['limit']) ? $arguments['limit'] : 50; // Default limit - move to conf file
+        $limit = isset($arguments['limit']) ? $arguments['limit'] : \Config::get('thingsee.limit'); // Default limit
 
         /**
          * Query for events, eager load device name, add scope modifiers based on uri params

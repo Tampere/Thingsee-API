@@ -8,6 +8,8 @@ The devices push data to our server every 10 minutes via GPRS connection. Curren
 
 ##API Usage
 
+Prefix all requests with API version, currently /v1
+
 ###Persisting data
 The API responds to HTTP POST at /events. The payload is assumed to be exactly what the ThingSee Cloud pushes.
 

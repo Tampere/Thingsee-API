@@ -22,7 +22,7 @@ class ThingseeController extends Controller
         $arguments = \Input::all();
 
         // You can only query one device per request, 'cose multiple devices per request doesn't seem like a useful feature
-        $device = isset($arguments['device']) ? $arguments['device'] : ""; 
+        $device = isset($arguments['device']) ? $arguments['device'] : \Config::get('thingsee.defaultDevice'); 
         $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : "";
         $limit = isset($arguments['limit']) ? $arguments['limit'] : \Config::get('thingsee.limit'); // Default limit
 

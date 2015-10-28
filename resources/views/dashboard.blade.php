@@ -54,7 +54,7 @@
                 drawLineChart();
             });
 
-            $.getJSON('http://www.avoindata.net/thingsee/v1/events?sensor=0x00060200', function(json) {
+            $.getJSON('http://www.avoindata.net/thingsee/v1/events?sensor=0x00060200&limit=1', function(json) {
                 valuesHumidity = json;
                 currentHumidity = parseFloat(json[0]['val']);
 
@@ -102,7 +102,10 @@
 
             var options = {
                 hAxis: {
-                  title: 'Timestamp'
+                  title: 'Timestamp',
+                  gridlines: {
+                    count: 10
+                  }
                 },
                 vAxis: {
                   title: 'Temperature'

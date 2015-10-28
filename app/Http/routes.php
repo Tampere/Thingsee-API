@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dashboard', function() {
+	return view('dashboard');
+});
+
 Route::group(['prefix' => 'v1'], function() {
 	Route::post('/events', 'ThingseeController@postEvents');
 	Route::get('/events', 'ThingseeController@getEvents');

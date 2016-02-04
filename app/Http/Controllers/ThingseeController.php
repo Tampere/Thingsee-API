@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Device;
+use App\Event;
 use Log;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -80,5 +82,41 @@ class ThingseeController extends Controller
     public function getDevices()
     {
         return \App\Device::orderBy('updated_at', 'desc')->get(['id', 'name']);
+    }
+
+    /**
+     * Get device info
+     * @param $id
+     * @return mixed
+     */
+    public function getDevice($id)
+    {
+        return Device::find($id);
+    }
+
+    public function getDeviceData($id)
+    {
+        /**
+         * Check query string parameters for dynamic scope modifications
+         */
+        $arguments = \Input::all();
+
+        $device = Device::find($id);
+        // You can only query one device per request, 'cose multiple devices per request doesn't seem like a useful feature
+//        $device = isset($arguments['device']) ? $arguments['device'] : \Config::get('thingsee.defaultDevice');
+        $sensor = isset($arguments['sensor']) ? $arguments['sensor'] : "";
+        $limit = isset($arguments['limit']) ? $arguments['limit'] : \Config::get('thingsee.limit'); // Default limit
+
+        /**
+         * Query for events, eager load device name, add scope modifiers based on uri params
+         * @var Eloquent collection
+         */
+        $events = \App\Event::orderBy('updated_at', 'desc')->with(array('device' => function($query)
+        {
+            $query->addSelect(array('id', 'name'));
+        }))->device($device['name'])->sensor($sensor)->subset($limit)->get(['sid', 'val', 'ts', 'created_at', 'device_id']);
+
+//        $events = Event::all();
+        return $events;
     }
 }

@@ -1,11 +1,12 @@
 /vendor
-/node_modules
-Homestead.yaml
-Homestead.json
+/config/placemeter.php
 artisan
 composer.lock
 phpspec.yml
 phpunit.xml
 server.php
+error_log
+composer.phar
 .env
+/.idea
 .DS_Store

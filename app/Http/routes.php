@@ -23,4 +23,12 @@ Route::group(['prefix' => 'v1'], function() {
 	Route::post('/events', 'ThingseeController@postEvents');
 	Route::get('/events', 'ThingseeController@getEvents');
 	Route::get('/devices', 'ThingseeController@getDevices');
+
+	Route::get('/envs', 'ThingseeController@getDevices');
+	Route::get('/envs/{id}', 'ThingseeController@getDevice');
+	Route::get('/envs/{id}/data', 'ThingseeController@getDeviceData');
+
+	Route::get('/measurementpoints', 'PlacemeterController@getMeasurementPoints');
+	Route::get('/measurementpoints/{id}', 'PlacemeterController@getMeasurementPoint');
+	Route::get('/measurementpoints/{id}/data', 'PlacemeterController@getMeasurementPointData');
 });

@@ -16,8 +16,7 @@ class PlacemeterController extends Controller
 
     public function __construct()
     {
-        $client = new Client;
-        $this->client = $client;
+        $this->client = new Client;
     }
 
     public function getMeasurementPoints()

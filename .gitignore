@@ -1,5 +1,6 @@
 /vendor
 /config/placemeter.php
+/config/innorange.php
 artisan
 composer.lock
 phpspec.yml

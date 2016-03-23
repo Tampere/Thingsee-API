@@ -36,6 +36,6 @@ Route::group(['prefix' => 'v1'], function() {
 
 	/* Innorange data endpoints */
 	Route::get('/cellmeasurementpoints', 'InnorangeController@index');
-	Route::get('/cellmeasurementpoints/{id}', 'InnorangeController@getMesurementPoint');
+	Route::get('/cellmeasurementpoints/{id}', 'InnorangeController@getMeasurementPoint');
 	Route::get('/cellmeasurementpoints/{id}/data', 'InnorangeController@getMeasurementPointData');
 });

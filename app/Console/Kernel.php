@@ -14,8 +14,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-//        \App\Console\Commands\Inspire::class,
         \App\Console\Commands\InnorangeImporter::class,
+        \App\Console\Commands\InnorangeBulkImporter::class,
     ];
 
     /**
@@ -34,8 +34,5 @@ class Kernel extends ConsoleKernel
             ->after(function() {
                 Log::info('Innorange importer ending');
             });
-
-//        $schedule->command('inspire')
-//                 ->hourly();
     }
 }

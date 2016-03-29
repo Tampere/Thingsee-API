@@ -65,7 +65,8 @@ class InnorangeController extends Controller
     {
 
         $result = InnorangeData::with('MeasurementPoint')
-            ->where('measurement_point', $id);
+            ->where('measurement_point', $id)
+            ->orderBy('timestamp', 'desc');
 
         if($request->has('sd')) {
             $result = $result->where('timestamp', '>=', $request->get('sd'));
@@ -75,7 +76,7 @@ class InnorangeController extends Controller
             $result = $result->where('timestamp', '<=', $request->get('ed'));
         }
 
-        $result = $result->paginate(50);
+        $result = $result->paginate($request->has('perpage') ? $request->get('perpage') : 50);
 
 
         if(!$result)

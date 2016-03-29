@@ -9,21 +9,21 @@ use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 
-class InnorangeImporter extends Command
+class InnorangeBulkImporter extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'import:innorange';
+    protected $signature = 'import:innorangebulk';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Imports hourly data from Innorage API';
+    protected $description = 'Imports last two months of data from Innorage API';
 
     protected $client;
 
@@ -47,7 +47,7 @@ class InnorangeImporter extends Command
     {
         $api_key = config::get('innorange.api_key');
         $endTime = Carbon::now()->subHour()->toIso8601String();
-        $startTime = Carbon::now()->subHours(2)->toIso8601String();
+        $startTime = Carbon::now()->subMonths(2)->toIso8601String();
 
         /* Haetaan vain edellisen tunnin tiedot yhdessä haussa, sillä aiemmat tiedot ovat oletettavasti jo kannassa. */
         $startTime = substr($startTime, 0, -4);
@@ -58,10 +58,9 @@ class InnorangeImporter extends Command
         $dataAdded = 0;
 
         /* Haetaan jokaisen mittauspisteen datat peräjälkeen */
-        foreach($measurementPoints as $measurementPoint)
-        {
+        foreach($measurementPoints as $measurementPoint) {
             $response = $this->client->request('GET',
-                'https://customers.innorange.fi/api/v1/'.$measurementPoint->url.'/visitors/hourly/?sd='.$startTime.'&ed='.$endTime.'&api_key='.$api_key);
+                'https://customers.innorange.fi/api/v1/' . $measurementPoint->url . '/visitors/hourly/?sd=' . $startTime . '&ed=' . $endTime . '&api_key=' . $api_key);
 
             /*
              *   Tässä välissä jos vastaus on muuta kuin 200, voitaisiin vaikka lokittaa virhe, mutta lopulta tämä prosessi
@@ -70,23 +69,24 @@ class InnorangeImporter extends Command
             $data = $response->getBody()->getContents();
             $data = json_decode($data, true);
 
+            foreach ($data['results'] as $result) {
+                /* Katsotaan nyt vielä, ettei tule duplikaattia kantaan, koska miksipä ei */
+                $dataExists = InnorangeData::where('measurement_point', $measurementPoint->id)
+                    ->where('timestamp', $result['timestamp'])
+                    ->count();
 
-            /* Katsotaan nyt vielä, ettei tule duplikaattia kantaan, koska miksipä ei */
-            $dataExists = InnorangeData::where('measurement_point', $measurementPoint->id)
-                ->where('timestamp', $data['results'][0]['timestamp'])
-                ->count();
-
-            if($dataExists == 0)
-            {
-                InnorangeData::create([
-                    'measurement_point' => $measurementPoint->id,
-                    'timestamp'         => $data['results'][0]['timestamp'],
-                    'visitors'          => $data['results'][0]['visitors']
-                ]);
-                $dataAdded++;
+                if ($dataExists == 0) {
+                    InnorangeData::create([
+                        'measurement_point' => $measurementPoint->id,
+                        'timestamp' => $result['timestamp'],
+                        'visitors' => $result['visitors']
+                    ]);
+                    $dataAdded++;
+                }
             }
-        }
 
-        $this->info('['.Carbon::now().'] Innorangen datan importointi ajettiin, tuotiin ' . $dataAdded . ' tietuetta.');
+        }
+        
+        $this->info('[' . Carbon::now() . '] Innorangen datan importointi ajettiin, tuotiin ' . $dataAdded . ' tietuetta.');
     }
 }

@@ -9,6 +9,7 @@ class InnorangeMeasurementPoint extends Model
     protected $fillable = ['name', 'url', 'location'];
     protected $hidden = ['created_at', 'updated_at', 'location', 'url'];
     protected $appends = ['self_link', 'data_link'];
+    protected $casts = ['id' => 'integer'];
 
     public function Location()
     {

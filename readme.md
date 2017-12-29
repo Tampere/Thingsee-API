@@ -1,19 +1,19 @@
-#ThingSee One data API
+# ThingSee One data API
 
 Provides an API for querying data from [ThingSee One](http://www.thingsee.com/) IOT devices that will be placed around the city of Tampere.
 
-##Overview
+## Overview
 
 The devices push data to our server every 10 minutes via GPRS connection. Currently the data includes temperature (C), humidity (% rH), pressure (hPa) and luminance (lux).
 
-##API Usage
+## API Usage
 
 Prefix all requests with API version, currently /v1
 
-###Persisting data
+### Persisting data
 The API responds to HTTP POST at /events. The payload is assumed to be exactly what the ThingSee Cloud pushes.
 
-###Reading data
+### Reading data
 The  API responds to HTTP GET at /envs, which will return a list of devices.
 Each device has links array pointing to self (envs/{:id}) and data (envs/{:id}/data).
 
@@ -35,7 +35,7 @@ Possible parameters are:
 - Sensor - a sensor or a list of sensors (0x00060400 or 0x00060100,0x00060200,...)
 - Limit - How many records to retrieve. If not present, the maxium is set to 50.
 
-####Sensor mapping
+#### Sensor mapping
 - 0x00060100 - Temperature
 - 0x00060200 - Humidity
 - 0x00060300 - Pressure
